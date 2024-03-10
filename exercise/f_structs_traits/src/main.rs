@@ -5,7 +5,10 @@
 // `cargo run` without any errors.
 //
 //  trait Bite...
-
+trait Bite {
+    fn bite(self: &mut Self);
+    fn init()->Self;
+}
 
 // 2. Now create a struct named Grapes with a field that tracks how many grapes are left.  If you
 // need a hint, look at how it was done for Carrot at the bottom of this file (you should probably
@@ -13,13 +16,26 @@
 //
 // #[derive(Debug)] // include this line right before your struct definition
 // struct Grapes...
-
+#[derive(Debug)]
+struct Grapes{
+    amount_left: i32,
+}
 
 // 3. Implement Bite for Grapes.  When you bite a Grapes, subtract 1 from how many grapes are left.
 // If you need a hint, look at how it was done for Carrot at the bottom of this file.
 //
 // impl Bite for...
+impl Bite for Grapes{
+    fn init()-> Self{
+        Self{
+            amount_left : 100,
+        }
+    }
+    fn bite(self: &mut Self){
+        self.amount_left = self.amount_left - 1;
+    }
 
+}
 
 fn main() {
     // Once you finish #1 above, this part should work.
@@ -30,9 +46,9 @@ fn main() {
     // 4. Uncomment and adjust the code below to match how you defined your
     // Grapes struct.
     //
-    //let mut grapes = Grapes { amount_left: 100 };
-    //grapes.bite();
-    //println!("Eat a grape: {:?}", grapes);
+    let mut grapes = Grapes::init();
+    grapes.bite();
+    println!("Eat a grape: {:?}", grapes);
 
     // Challenge: Uncomment the code below. Create a generic `bunny_nibbles`
     // function that:
@@ -41,16 +57,22 @@ fn main() {
     // Hint: Define the generic type between the function name and open paren:
     //       fn function_name<T: Bite>(...)
     //
-    //bunny_nibbles(&mut carrot);
-    //println!("Bunny nibbles for awhile: {:?}", carrot);
+    bunny_nibbles(&mut grapes);
+    println!("Bunny nibbles for awhile: {:?}", grapes);
 }
+fn bunny_nibbles<T: Bite>(food: &mut T){
+    food.bite();
+    food.bite();
+    food.bite();
 
+}
 #[derive(Debug)] // This enables using the debugging format string "{:?}"
 struct Carrot {
     percent_left: f32,
 }
 
 impl Bite for Carrot {
+    fn init()-> Self { Self{percent_left:100.0} }
     fn bite(self: &mut Self) {
         // Eat 20% of the remaining carrot. It may take awhile to eat it all...
         self.percent_left *= 0.8;
