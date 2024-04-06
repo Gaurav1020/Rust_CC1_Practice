@@ -31,7 +31,7 @@ impl Shot {
                 }
                 return 1;
             },
-            Shot::Miss =>{
+            Shot::Miss => {
                 return 0;
             }
         };
@@ -91,7 +91,7 @@ impl Coord {
 
 }
 
-// Generate some random coordinates
+// Generate some random coordinates {predefined function}
 fn get_arrow_coords(num: u32) -> Vec<Coord> {
     let mut coords: Vec<Coord> = Vec::new();
     for _ in 0..num {
