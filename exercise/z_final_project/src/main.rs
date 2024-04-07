@@ -39,7 +39,7 @@ fn main() {
     let subcommand = args.remove(0);
     match subcommand.as_str() {
         // EXAMPLE FOR CONVERSION OPERATIONS
-        "blur" => {
+        x if x == "blur" => {
             if args.len() != 2 {
                 print_usage_and_exit();
             }
