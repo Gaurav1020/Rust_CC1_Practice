@@ -39,7 +39,7 @@ fn main() {
     let subcommand = args.remove(0);
     match subcommand.as_str() {
         // EXAMPLE FOR CONVERSION OPERATIONS
-        x if x == "blur" => {
+        "blur" => {
             if args.len() != 2 {
                 print_usage_and_exit();
             }
@@ -48,6 +48,16 @@ fn main() {
             // **OPTION**
             // Improve the blur implementation -- see the blur() function below
             blur(infile, outfile);
+        }
+        "brighten" => {
+            if args.len() != 2 {
+                print_usage_and_exit();
+            }
+            let infile = args.remove(0);
+            let outfile = args.remove(0);
+            // **OPTION**
+            // Improve the blur implementation -- see the blur() function below
+            brighten(infile, outfile);
         }
 
         // **OPTION**
