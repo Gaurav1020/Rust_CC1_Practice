@@ -55,8 +55,6 @@ fn main() {
             }
             let infile = args.remove(0);
             let outfile = args.remove(0);
-            // **OPTION**
-            // Improve the blur implementation -- see the blur() function below
             brighten(infile, outfile);
         }
 
@@ -116,8 +114,14 @@ fn blur(infile: String, outfile: String) {
 }
 
 fn brighten(infile: String, outfile: String) {
-    // See blur() for an example of how to open / save an image.
+    let img = image::open(infile).expect("Failed to open INFILE.");
+    let img2 = img.brighten(2);
+    img2.save(outfile).expect("Failed writing OUTFILE.");
 
+
+
+    // See blur() for an example of how to open / save an image.
+    
     // .brighten() takes one argument, an i32.  Positive numbers brighten the
     // image. Negative numbers darken it.  It returns a new image.
 
