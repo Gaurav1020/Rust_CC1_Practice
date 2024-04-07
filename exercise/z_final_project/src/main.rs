@@ -48,7 +48,7 @@ fn main() {
             // **OPTION**
             // Improve the blur implementation -- see the blur() function below
             blur(infile, outfile);
-        }
+        },
         "brighten" => {
             if args.len() != 3 {
                 print_usage_and_exit();
@@ -57,31 +57,42 @@ fn main() {
             let outfile = args.remove(0);
             let amount = args.remove(0).parse().expect("Failed to parse a number");
             brighten(infile, outfile, amount);
-        }
-
-        // **OPTION**
-        // Brighten -- see the brighten() function below
-
-        // **OPTION**
-        // Crop -- see the crop() function below
-
-        // **OPTION**
-        // Rotate -- see the rotate() function below
-
-        // **OPTION**
-        // Invert -- see the invert() function below
-
-        // **OPTION**
-        // Grayscale -- see the grayscale() function below
-
-        // A VERY DIFFERENT EXAMPLE...a really fun one. :-)
+        },
+        "crop" => {
+            if args.len() != 6 {
+                print_usage_and_exit();
+            }
+            let infile = args.remove(0);
+            let outfile = args.remove(0);
+            let x = args.remove(0).parse().expect("Failed to parse a number");
+            let y = args.remove(0).parse().expect("Failed to parse a number");
+            let w = args.remove(0).parse().expect("Failed to parse a number");
+            let h = args.remove(0).parse().expect("Failed to parse a number");
+            crop(infile, outfile, x, y, w, h);
+        },
+        "rotate" => {
+            if args.len() != 3 {
+                print_usage_and_exit();
+            }
+            let infile = args.remove(0);
+            let outfile = args.remove(0);
+            let amount = args.remove(0).parse().expect("Failed to parse a number");
+            rotate(infile, outfile, amount);
+        },
         "fractal" => {
             if args.len() != 1 {
                 print_usage_and_exit();
             }
             let outfile = args.remove(0);
             fractal(outfile);
-        }
+        },
+        "generate" => {
+            if args.len() != 1 {
+                print_usage_and_exit();
+            }
+            let outfile = args.remove(0);
+            generate(outfile);
+        },
 
         // **OPTION**
         // Generate -- see the generate() function below -- this should be sort of like "fractal()"!
@@ -96,7 +107,8 @@ fn main() {
 fn print_usage_and_exit() {
     println!("USAGE (when in doubt, use a .png extension on your filenames)");
     println!("blur INFILE OUTFILE");
-    println!("blur INFILE OUTFILE AMOUNT");
+    println!("brighten INFILE OUTFILE AMOUNT");
+    println!("crop INFILE OUTFILE X Y WIDTH HEIGHT");
     println!("fractal OUTFILE");
     // **OPTION**
     // Print useful information about what subcommands and arguments you can use
@@ -121,63 +133,43 @@ fn brighten(infile: String, outfile: String, amount: i32) {
     img2.save(outfile).expect("Failed writing OUTFILE.");
 }
 
-fn crop(infile: String, outfile: String) {
-    // See blur() for an example of how to open an image.
-
-    // .crop() takes four arguments: x: u32, y: u32, width: u32, height: u32
-    // You may hard-code them, if you like.  It returns a new image.
-
-    // Challenge: parse the four values from the command-line and pass them
-    // through to this function.
-
-    // See blur() for an example of how to save the image.
+fn crop(infile: String, outfile: String, x: u32, y: u32, w: u32, h: u32) {
+    let mut img = image::open(infile).expect("Failed to open INFILE.");
+    let img2 = img.crop(x, y, w, h);
+    img2.save(outfile).expect("Failed writing OUTFILE.");
 }
 
-fn rotate(infile: String, outfile: String) {
-    // See blur() for an example of how to open an image.
-
-    // There are 3 rotate functions to choose from (all clockwise):
-    //   .rotate90()
-    //   .rotate180()
-    //   .rotate270()
-    // All three methods return a new image.  Pick one and use it!
-
-    // Challenge: parse the rotation amount from the command-line, pass it
-    // through to this function to select which method to call.
-
-    // See blur() for an example of how to save the image.
-}
-
-fn invert(infile: String, outfile: String) {
-    // See blur() for an example of how to open an image.
-
-    // .invert() takes no arguments and converts the image in-place, so you
-    // will use the same image to save out to a different file.
-
-    // See blur() for an example of how to save the image.
-}
-
-fn grayscale(infile: String, outfile: String) {
-    // See blur() for an example of how to open an image.
-
-    // .grayscale() takes no arguments. It returns a new image.
-
-    // See blur() for an example of how to save the image.
+fn rotate(infile: String, outfile: String, amount: u32) {
+    let mut img = image::open(infile).expect("Failed to open INFILE.");
+    let mut img2 = img.clone();
+    match amount {
+        x if x==90 => {
+            img2=img2.rotate90();
+        },
+        x if x==180 => {
+            img2=img2.rotate180();
+        },
+        x if x==270 => {
+            img2=img2.rotate270();
+        },
+        _ => {
+            print_usage_and_exit();
+        }
+    }
+    img2.save(outfile).expect("Failed writing OUTFILE.");
 }
 
 fn generate(outfile: String) {
     // Create an ImageBuffer -- see fractal() for an example
-
-    // Iterate over the coordinates and pixels of the image -- see fractal() for an example
-
-    // Set the image to some solid color. -- see fractal() for an example
-
-    // Challenge: parse some color data from the command-line, pass it through
-    // to this function to use for the solid color.
-
-    // Challenge 2: Generate something more interesting!
-
-    // See blur() for an example of how to save the image
+    let width = 800;
+    let height = 800;
+    let mut imgbuf = image::ImageBuffer::new(width, height);
+    let scale_x = 3.0 / width as f32;
+    let scale_y = 3.0 / height as f32;
+    for (x, y, pixel) in imgbuf.enumerate_pixels_mut() {
+        *pixel = image::Rgb([255 as u8, 0, 0]);
+    }
+    imgbuf.save(outfile).unwrap();
 }
 
 // This code was adapted from https://github.com/PistonDevelopers/image
